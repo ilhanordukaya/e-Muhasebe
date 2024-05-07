@@ -17,7 +17,7 @@ namespace eMuhasebeServer.Infrastructure
 		{
 			services.AddDbContext<ApplicationDbContext>(options =>
 			{
-				options.UseSqlServer(configuration.GetConnectionString("SqlServer"));
+				options.UseNpgsql(configuration.GetConnectionString("PostgreSqlServer"));
 			});
 
 			services.AddScoped<IUnitOfWork>(srv => srv.GetRequiredService<ApplicationDbContext>());

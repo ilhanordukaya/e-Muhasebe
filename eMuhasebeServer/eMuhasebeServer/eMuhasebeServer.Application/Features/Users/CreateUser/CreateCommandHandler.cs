@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using eMuhasebeServer.Domain.Entities;
+using eMuhasebeServer.Domain.Events;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,8 @@ namespace eMuhasebeServer.Application.Features.Users.CreateUser
 {
 	internal sealed class CreateCommandHandler(
 		UserManager<AppUser> userManager,
-		IMapper mapper
+		IMapper mapper,
+		IMediator mediator
 		) :
 		IRequestHandler<CreateUserCommand, Result<string>>
 	{
@@ -36,6 +38,7 @@ namespace eMuhasebeServer.Application.Features.Users.CreateUser
 				return Result<string>.Failure(identityResult.Errors.Select(x=>x.Description).ToList());
 			}
 
+			await mediator.Publish(new AppUserEvent(appUser.Id));
 			return "Kullanıcı kaydı başarıyla tamamlandı";
 
 
