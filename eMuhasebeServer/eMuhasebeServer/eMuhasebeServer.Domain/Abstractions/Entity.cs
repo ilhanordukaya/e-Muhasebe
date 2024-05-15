@@ -3,7 +3,8 @@
 	public abstract class Entity
 	{
 		public Guid Id { get; set; }
-		protected Entity()
+		public bool IsDeleted { get; set; } = false;
+        protected Entity()
 		{
 			Id = Guid.NewGuid();
 		}

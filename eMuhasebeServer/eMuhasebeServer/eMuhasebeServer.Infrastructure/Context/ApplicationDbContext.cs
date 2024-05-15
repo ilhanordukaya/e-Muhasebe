@@ -12,7 +12,8 @@ namespace eMuhasebeServer.Infrastructure.Context
 		{
 		}
 
-		protected override void OnModelCreating(ModelBuilder builder)
+        public DbSet<Company> Companies { get; set; }
+        protected override void OnModelCreating(ModelBuilder builder)
 		{
 			builder.ApplyConfigurationsFromAssembly(typeof(DependencyInjection).Assembly);
 
