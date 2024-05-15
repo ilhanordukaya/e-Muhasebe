@@ -1,4 +1,5 @@
 ﻿using eMuhasebeServer.Domain.Entities;
+using eMuhasebeServer.Domain.Repositories;
 using eMuhasebeServer.Infrastructure.Context;
 using eMuhasebeServer.Infrastructure.Options;
 using GenericRepository;
@@ -15,12 +16,15 @@ namespace eMuhasebeServer.Infrastructure
 	{
 		public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
 		{
+			services.AddScoped<CompanyDbContext>();
+
 			services.AddDbContext<ApplicationDbContext>(options =>
 			{
 				options.UseNpgsql(configuration.GetConnectionString("PostgreSqlServer"));
 			});
 
 			services.AddScoped<IUnitOfWork>(srv => srv.GetRequiredService<ApplicationDbContext>());
+			services.AddScoped<IUnitOfWorkCompany>(srv => srv.GetRequiredService<CompanyDbContext>());
 
 			services
 				.AddIdentity<AppUser, IdentityRole<Guid>>(cfr =>

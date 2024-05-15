@@ -1,6 +1,8 @@
-﻿using eMuhasebeServer.Domain.Entities;
+﻿using eMuhasebeServer.Application.Services;
+using eMuhasebeServer.Domain.Entities;
 using eMuhasebeServer.Domain.Repositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using TS.Result;
 
 namespace eMuhasebeServer.Application.Features.Companies.MigrateAllCompanies

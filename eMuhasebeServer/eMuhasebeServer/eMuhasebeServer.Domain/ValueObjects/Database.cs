@@ -8,6 +8,7 @@ namespace eMuhasebeServer.Domain.ValueObjects
 {
 	public sealed record Database(
 	string Server,
+	string Port,
 	string DatabaseName,
 	string UserId,
 	string Password);
