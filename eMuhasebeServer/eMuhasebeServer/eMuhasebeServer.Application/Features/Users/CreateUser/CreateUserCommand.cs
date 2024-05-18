@@ -13,7 +13,8 @@ namespace eMuhasebeServer.Application.Features.Users.CreateUser
 		string LastName,
 		string UserName,
 		string Email,
-		string Password
+		string Password,
+		List<Guid> CompanyIds
 		)
 		:IRequest<Result<string>>;
 

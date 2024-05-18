@@ -1,20 +1,19 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { NgForm } from '@angular/forms';
 import { CompanyModel } from '../../models/company.model';
 import { HttpService } from '../../services/http.service';
 import { SwalService } from '../../services/swal.service';
-
-
+import { NgForm } from '@angular/forms';
+import { SharedModule } from '../../modules/shared.module';
+import { CompanyPipe } from '../../pipes/company.pipe';
 
 @Component({
   selector: 'app-companies',
   standalone: true,
-  imports: [],
+  imports: [SharedModule, CompanyPipe],
   templateUrl: './companies.component.html',
   styleUrl: './companies.component.css'
 })
 export class CompaniesComponent {
-
   companies: CompanyModel[] = [];
   search:string = "";
 
@@ -86,6 +85,6 @@ export class CompaniesComponent {
       this.http.get<string>("SeedData/Create",(res)=> {
         this.swal.callToast(res);
       });
-    },"Oluştur");    
+    },"Oluştur");        
   }
 }

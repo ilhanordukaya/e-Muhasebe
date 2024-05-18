@@ -5,6 +5,7 @@ import { UserModel } from '../../models/user.model';
 import { NgForm } from '@angular/forms';
 import { HttpService } from '../../services/http.service';
 import { SwalService } from '../../services/swal.service';
+import { CompanyModel } from '../../models/company.model';
 
 @Component({
   selector: 'app-users',
@@ -16,6 +17,7 @@ import { SwalService } from '../../services/swal.service';
 export class UsersComponent {
 
   users: UserModel[] = [];
+  companies: CompanyModel[] = [];
   search:string = "";
 
   @ViewChild("createModalCloseBtn") createModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;
@@ -31,11 +33,18 @@ export class UsersComponent {
 
   ngOnInit(): void {
     this.getAll();
+    this.getAllCompanies();
   }
 
   getAll(){
     this.http.post<UserModel[]>("Users/GetAll",{},(res)=> {
       this.users = res;
+    });
+  }
+
+  getAllCompanies(){
+    this.http.post<CompanyModel[]>("Companies/GetAll",{},(res)=> {
+      this.companies = res;
     });
   }
 
@@ -61,6 +70,7 @@ export class UsersComponent {
 
   get(model: UserModel){
     this.updateModel = {...model};
+    this.updateModel.companyIds = this.updateModel.companyUsers.map(value => value.companyId);
   }
 
   update(form: NgForm){
