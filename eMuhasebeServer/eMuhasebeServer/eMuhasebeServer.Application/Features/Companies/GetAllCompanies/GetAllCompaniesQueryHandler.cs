@@ -1,13 +1,17 @@
-﻿using eMuhasebeServer.Domain.Entities;
+﻿using eMuhasebeServer.Application.Services;
+using eMuhasebeServer.Domain.Entities;
 using eMuhasebeServer.Domain.Repositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using TS.Result;
 
 namespace eMuhasebeServer.Application.Features.Companies.GetAllCompanies
 {
 	internal sealed class GetAllCompaniesQueryHandler(
 	ICompanyRepository companyRepository,
-	ICacheService cacheService) : IRequestHandler<GetAllCompaniesQuery, Result<List<Company>>>
+	ICacheService cacheService
+		)
+		: IRequestHandler<GetAllCompaniesQuery, Result<List<Company>>>
 	{
 		public async Task<Result<List<Company>>> Handle(GetAllCompaniesQuery request, CancellationToken cancellationToken)
 		{
