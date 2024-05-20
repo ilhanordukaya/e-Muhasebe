@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using eMuhasebeServer.Application.Services;
 using eMuhasebeServer.Domain.Entities;
 using eMuhasebeServer.Domain.Events;
 using eMuhasebeServer.Domain.Repositories;
@@ -10,36 +11,37 @@ using TS.Result;
 
 namespace eMuhasebeServer.Application.Features.Users.CreateUser
 {
-	internal sealed class CreateCommandHandler(
-		UserManager<AppUser> userManager,
-		IMapper mapper,
-		IMediator mediator,
-		ICompanyUserRepository companyUserRepository,
-		IUnitOfWork unitOfWork
-		) :
-		IRequestHandler<CreateUserCommand, Result<string>>
+	internal sealed class CreateUserCommandHandler(
+	ICacheService cacheService,
+	IMediator mediator,
+	UserManager<AppUser> userManager,
+	ICompanyUserRepository companyUserRepository,
+	IUnitOfWork unitOfWork,
+	IMapper mapper) : IRequestHandler<CreateUserCommand, Result<string>>
 	{
 		public async Task<Result<string>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
 		{
-			bool isUserNameExist = await userManager.Users.AnyAsync(x => x.FirstName == request.FirstName, cancellationToken);
-			if (isUserNameExist) 
+			bool isUserNameExists = await userManager.Users.AnyAsync(p => p.UserName == request.UserName, cancellationToken);
+
+			if (isUserNameExists)
 			{
-				return Result<string>.Failure("Bu kullanıcı adı mevcuttur.");
+				return Result<string>.Failure("Bu kullanıcı adı daha önce kullanılmış");
 			}
 
-			bool isEmailExist= await userManager.Users.AnyAsync(x => x.Email == request.Email, cancellationToken);
+			bool isEmailExists = await userManager.Users.AnyAsync(p => p.Email == request.Email, cancellationToken);
 
-			if (isEmailExist) 
+			if (isEmailExists)
 			{
-				return Result<string>.Failure("Bu email başka bir kullanıcı tarafından kullanılmaktadır.");
+				return Result<string>.Failure("Bu mail adresi daha önce kullanılmış");
 			}
+
 			AppUser appUser = mapper.Map<AppUser>(request);
 
-			IdentityResult identityResult = await userManager.CreateAsync(appUser,request.Password);
+			IdentityResult identityResult = await userManager.CreateAsync(appUser, request.Password);
 
 			if (!identityResult.Succeeded)
 			{
-				return Result<string>.Failure(identityResult.Errors.Select(x=>x.Description).ToList());
+				return Result<string>.Failure(identityResult.Errors.Select(s => s.Description).ToList());
 			}
 
 			List<CompanyUser> companyUsers = request.CompanyIds.Select(s => new CompanyUser
@@ -51,11 +53,13 @@ namespace eMuhasebeServer.Application.Features.Users.CreateUser
 			await companyUserRepository.AddRangeAsync(companyUsers, cancellationToken);
 			await unitOfWork.SaveChangesAsync(cancellationToken);
 
+			cacheService.Remove("users");
+
 			await mediator.Publish(new AppUserEvent(appUser.Id));
+
+
 			return "Kullanıcı kaydı başarıyla tamamlandı";
-
-
 		}
-	}
 
+	}
 }

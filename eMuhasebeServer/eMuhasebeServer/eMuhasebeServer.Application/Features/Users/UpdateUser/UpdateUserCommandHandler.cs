@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using eMuhasebeServer.Application.Services;
 using eMuhasebeServer.Domain.Entities;
 using eMuhasebeServer.Domain.Events;
 using eMuhasebeServer.Domain.Repositories;
@@ -11,20 +12,20 @@ using TS.Result;
 namespace eMuhasebeServer.Application.Features.Users.UpdateUser
 {
 	internal sealed class UpdateUserCommandHandler(
-	UserManager<AppUser> userManager,
-	IMapper mapper,
+	ICacheService cacheService,
 	IMediator mediator,
-	 ICompanyUserRepository companyUserRepository,
-	IUnitOfWork unitOfWork
-		) : IRequestHandler<UpdateUserCommand, Result<string>>
+	UserManager<AppUser> userManager,
+	ICompanyUserRepository companyUserRepository,
+	IUnitOfWork unitOfWork,
+	IMapper mapper) : IRequestHandler<UpdateUserCommand, Result<string>>
 	{
 		public async Task<Result<string>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
 		{
 			AppUser? appUser =
-		   await userManager.Users
-		   .Where(p => p.Id == request.Id)
-		   .Include(p => p.CompanyUsers)
-		   .FirstOrDefaultAsync(cancellationToken);
+				await userManager.Users
+				.Where(p => p.Id == request.Id)
+				.Include(p => p.CompanyUsers)
+				.FirstOrDefaultAsync(cancellationToken);
 
 			bool isMailChanged = false;
 
@@ -89,7 +90,7 @@ namespace eMuhasebeServer.Application.Features.Users.UpdateUser
 			await companyUserRepository.AddRangeAsync(companyUsers, cancellationToken);
 			await unitOfWork.SaveChangesAsync(cancellationToken);
 
-			//cacheService.Remove("users");
+			cacheService.Remove("users");
 
 			if (isMailChanged)
 			{
@@ -97,7 +98,6 @@ namespace eMuhasebeServer.Application.Features.Users.UpdateUser
 			}
 
 			return "Kullanıcı başarıyla güncellendi";
-
 		}
 	}
 }

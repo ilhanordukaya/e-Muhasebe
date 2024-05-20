@@ -1,7 +1,9 @@
-﻿using eMuhasebeServer.Domain.Entities;
+﻿using eMuhasebeServer.Application.Services;
+using eMuhasebeServer.Domain.Entities;
 using eMuhasebeServer.Domain.Repositories;
 using eMuhasebeServer.Infrastructure.Context;
 using eMuhasebeServer.Infrastructure.Options;
+using eMuhasebeServer.Infrastructure.Services;
 using GenericRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +18,14 @@ namespace eMuhasebeServer.Infrastructure
 	{
 		public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
 		{
+
+			services.AddMemoryCache();
+			//services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost"));
+
+			services.AddScoped<ICacheService, MemoryCacheService>();
+			//services.AddScoped<ICacheService, RedisCacheService>();
+
+			
 			services.AddScoped<CompanyDbContext>();
 
 			services.AddDbContext<ApplicationDbContext>(options =>
