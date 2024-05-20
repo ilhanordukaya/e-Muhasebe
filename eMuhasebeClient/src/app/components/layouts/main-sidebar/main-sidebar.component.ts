@@ -17,6 +17,10 @@ export class MainSidebarComponent {
   menus = Menus;
 
   constructor(
-    public auth: AuthService
-  ){}
+    public auth: AuthService,
+  ){
+    if(!this.auth.user.isAdmin){
+      this.menus = this.menus.filter(p=> !p.showThisMenuJustAdmin);
+    }
+  }
 }
