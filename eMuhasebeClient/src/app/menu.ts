@@ -40,6 +40,14 @@ export const Menus: MenuModel[] = [
         isTitle: false,
         subMenus: [],
         showThisMenuJustAdmin: true,
-    }
+    },
+    {
+        name: "Kasalar",
+        icon: "fa-solid fa-cash-register",
+        url: "/cash-registers",
+        isTitle: false,
+        subMenus:[],
+        showThisMenuJustAdmin: true,
+    },
     
 ]
