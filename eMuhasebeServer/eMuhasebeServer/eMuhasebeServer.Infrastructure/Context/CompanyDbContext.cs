@@ -68,8 +68,13 @@ namespace eMuhasebeServer.Infrastructure.Context
 			}
 		}
 		#endregion
+
+
 		public DbSet<CashRegister> CashRegisters { get; set; }
 		public DbSet<CashRegisterDetail> CashRegisterDetails { get; set; }
+		public DbSet<Bank> Banks { get; set; }
+		public DbSet<BankDetail> BankDetails { get; set; }
+
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			#region CashRegister
@@ -88,6 +93,26 @@ namespace eMuhasebeServer.Infrastructure.Context
 			#region CashRegisterDetail
 			modelBuilder.Entity<CashRegisterDetail>().Property(p => p.DepositAmount).HasColumnType("money");
 			modelBuilder.Entity<CashRegisterDetail>().Property(p => p.WithdrawalAmount).HasColumnType("money");
+			#endregion
+
+
+
+			#region Bank
+			modelBuilder.Entity<Bank>().Property(p => p.DepositAmount).HasColumnType("money");
+			modelBuilder.Entity<Bank>().Property(p => p.WithdrawalAmount).HasColumnType("money");
+			modelBuilder.Entity<Bank>()
+				.Property(p => p.CurrencyType)
+				.HasConversion(type => type.Value, value => CurrencyTypeEnum.FromValue(value));
+			modelBuilder.Entity<Bank>().HasQueryFilter(filter => !filter.IsDeleted);
+			modelBuilder.Entity<Bank>()
+			   .HasMany(p => p.Details)
+			   .WithOne()
+			   .HasForeignKey(p => p.BankId);
+			#endregion
+
+			#region BankDetail
+			modelBuilder.Entity<BankDetail>().Property(p => p.DepositAmount).HasColumnType("money");
+			modelBuilder.Entity<BankDetail>().Property(p => p.WithdrawalAmount).HasColumnType("money");
 			#endregion
 		}
 
