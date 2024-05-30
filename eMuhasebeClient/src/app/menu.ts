@@ -49,5 +49,13 @@ export const Menus: MenuModel[] = [
         subMenus:[],
         showThisMenuJustAdmin: true,
     },
+    {
+        name: "Bankalar",
+        icon: "fa-solid fa-bank",
+        url: "/banks",
+        isTitle: false,
+        subMenus:[],
+        showThisMenuJustAdmin: true,
+    },
     
 ]
