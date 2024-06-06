@@ -14,6 +14,8 @@ import { BanksComponent } from './components/banks/banks.component';
 import { BankDetailsComponent } from './components/bank-details/bank-details.component';
 import { CustomersComponent } from './components/customers/customers.component';
 import { CustomerDetailsComponent } from './components/customer-details/customer-details.component';
+import { ProductsComponent } from './components/products/products.component';
+import { ProductDetailsComponent } from './components/product-details/product-details.component';
 
 export const routes: Routes = [
     {
@@ -80,6 +82,19 @@ export const routes: Routes = [
                     {
                         path: "details/:id",
                         component: CustomerDetailsComponent
+                    }
+                ]
+            },
+            {
+                path: "products",
+                children: [
+                    {
+                        path: "",
+                        component: ProductsComponent
+                    },
+                    {
+                        path: "details/:id",
+                        component: ProductDetailsComponent
                     }
                 ]
             },

@@ -12,10 +12,10 @@ using TS.Result;
 namespace eMuhasebeServer.Application.Features.CashRegisterDetails.DeleteCashRegisterDetailById
 {
 	internal sealed class DeleteCashRegisterDetailByIdCommandHandler(
-	//ICustomerRepository customerRepository,
-	//ICustomerDetailRepository customerDetailRepository,
-	//IBankRepository bankRepository,
-	//IBankDetailRepository bankDetailRepository,
+	ICustomerRepository customerRepository,
+	ICustomerDetailRepository customerDetailRepository,
+	IBankRepository bankRepository,
+	IBankDetailRepository bankDetailRepository,
 	ICashRegisterRepository cashRegisterRepository,
 	ICashRegisterDetailRepository cashRegisterDetailRepository,
 	IUnitOfWorkCompany unitOfWorkCompany,
@@ -72,55 +72,55 @@ namespace eMuhasebeServer.Application.Features.CashRegisterDetails.DeleteCashReg
 
 			if (cashRegisterDetail.BankDetailId is not null)
 			{
-				//BankDetail? oppositeBankDetail =
-				//await bankDetailRepository
-				//.GetByExpressionWithTrackingAsync(p => p.Id == cashRegisterDetail.BankDetailId, cancellationToken);
+				BankDetail? oppositeBankDetail =
+				await bankDetailRepository
+				.GetByExpressionWithTrackingAsync(p => p.Id == cashRegisterDetail.BankDetailId, cancellationToken);
 
-				//if (oppositeBankDetail is null)
-				//{
-				//	return Result<string>.Failure("Banka hareketi bulunamadı");
-				//}
+				if (oppositeBankDetail is null)
+				{
+					return Result<string>.Failure("Banka hareketi bulunamadı");
+				}
 
-				//Bank? oppositeBank =
-				//await bankRepository
-				//.GetByExpressionWithTrackingAsync(p => p.Id == oppositeBankDetail.BankId, cancellationToken);
+				Bank? oppositeBank =
+				await bankRepository
+				.GetByExpressionWithTrackingAsync(p => p.Id == oppositeBankDetail.BankId, cancellationToken);
 
-				//if (oppositeBank is null)
-				//{
-				//	return Result<string>.Failure("Banka bulunamadı");
-				//}
+				if (oppositeBank is null)
+				{
+					return Result<string>.Failure("Banka bulunamadı");
+				}
 
-				//oppositeBank.DepositAmount -= oppositeBankDetail.DepositAmount;
-				//oppositeBank.WithdrawalAmount -= oppositeBankDetail.WithdrawalAmount;
+				oppositeBank.DepositAmount -= oppositeBankDetail.DepositAmount;
+				oppositeBank.WithdrawalAmount -= oppositeBankDetail.WithdrawalAmount;
 
-				//bankDetailRepository.Delete(oppositeBankDetail);
+				bankDetailRepository.Delete(oppositeBankDetail);
 			}
 
 			if (cashRegisterDetail.CustomerDetailId is not null)
 			{
-				//CustomerDetail? customerDetail =
-				//await customerDetailRepository
-				//.GetByExpressionWithTrackingAsync(p => p.Id == cashRegisterDetail.CustomerDetailId, cancellationToken);
+				CustomerDetail? customerDetail =
+				await customerDetailRepository
+				.GetByExpressionWithTrackingAsync(p => p.Id == cashRegisterDetail.CustomerDetailId, cancellationToken);
 
-				//if (customerDetail is null)
-				//{
-				//	return Result<string>.Failure("Cari hareket bulunamadı");
-				//}
+				if (customerDetail is null)
+				{
+					return Result<string>.Failure("Cari hareket bulunamadı");
+				}
 
-				//Customer? customer =
-				//await customerRepository
-				//.GetByExpressionWithTrackingAsync(p => p.Id == customerDetail.CustomerId, cancellationToken);
+				Customer? customer =
+				await customerRepository
+				.GetByExpressionWithTrackingAsync(p => p.Id == customerDetail.CustomerId, cancellationToken);
 
-				//if (customer is null)
-				//{
-				//	return Result<string>.Failure("Cari bulunamadı");
-				//}
+				if (customer is null)
+				{
+					return Result<string>.Failure("Cari bulunamadı");
+				}
 
-				//customer.DepositAmount -= customerDetail.DepositAmount;
-				//customer.WithdrawalAmount -= customerDetail.WithdrawalAmount;
+				customer.DepositAmount -= customerDetail.DepositAmount;
+				customer.WithdrawalAmount -= customerDetail.WithdrawalAmount;
 
-				//customerDetailRepository.Delete(customerDetail);
-				//cacheService.Remove("customers");
+				customerDetailRepository.Delete(customerDetail);
+				cacheService.Remove("customers");
 			}
 
 			cashRegisterDetailRepository.Delete(cashRegisterDetail);

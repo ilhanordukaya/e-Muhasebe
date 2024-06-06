@@ -19,3 +19,4 @@ export class DatabaseModel{
     userId: string = "";
     password: string = "";
 }
+
