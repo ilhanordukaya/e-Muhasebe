@@ -9,6 +9,7 @@ namespace eMuhasebeServer.WebAPI.Controllers
 	{
 		public ProductDetailsController(IMediator mediator) : base(mediator)
 		{
+
 		}
 
 		[HttpPost]
